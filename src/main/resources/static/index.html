@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+
+        function printValue(){
+            var inputValue = $("#inputValue").val();
+            var bundleSize = $("#bundleSize").val();
+
+            if(inputValue === "" || bundleSize <= 0) {
+                clearPrintValue();
+                return ;
+            }
+
+            $.post("/assemble", { inputValue: inputValue, bundleSize: bundleSize })
+                .done(function(data) {
+                        $("#quotient").val(data.quotient);
+                        $("#reminder").val(data.reminder);
+                })
+                .fail(function(xhr) {
+                    clearPrintValue();
+                });
+
+        }
+
+        function triggerPrint(){
+            if(window.event.keyCode == 13){
+                printValue();
+            }
+        }
+        function clearPrintValue(){
+            $("#quotient").val("");
+            $("#reminder").val("");
+        }
+    </script>
+</head>
+<body>
+<table style="undefined;table-layout: fixed; width: 1000px;">
+    <colgroup>
+        <col style="width: 100px">
+        <col style="width: 900px">
+    </colgroup>
+    <tr>
+        <td>입력</td>
+        <td>
+            <textarea id="inputValue" style="width: 100%;height: 100px;"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>출력단위묶음</td>
+        <td>
+            <input type="number" id="bundleSize" style="width: 100%;" onkeyup="triggerPrint();" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <button onclick="printValue();" style="float: right;width: 50px;height: 30px;
+                margin-top: 10px;margin-bottom: 10px;">출력</button>
+        </td>
+    </tr>
+    <tr>
+        <td>몫 :</td>
+        <td>
+            <input readonly id="quotient" style="width: 100%;"/>
+        </td>
+    </tr>
+    <tr>
+        <td>나머지 :</td>
+        <td>
+            <input readonly id="reminder" style="width: 100%;"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
